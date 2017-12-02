@@ -1,12 +1,17 @@
 [
-	{
-        "nome":"Maria Solange",
-        "nascimento":"1965-11-29",
-        "email":"maria@gmai.com"
-	},
-	{
-        "nome":"Nathalya Brega",
-        "nascimento":"1996-5-21",
-        "email":"brega@gmail.com"
-	}
+        {
+                "email": "maria@gmai.com",
+                "nome": "Maria Solange",
+                "nascimento": "1965-11-29"
+        },
+        {
+                "email": "brega@gmail.com",
+                "nome": "Nathalya Brega",
+                "nascimento": "1996-5-21"
+        },
+        {
+                "email": "maxsuel@Hotmail.com",
+                "nome": "maxsuel",
+                "nascimento": "1995-04-27"
+        }
 ]

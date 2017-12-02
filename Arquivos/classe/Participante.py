@@ -3,7 +3,7 @@ class Participante():
 
     def __init__(self,nome,data,email):
         self.nome=nome
-        self.nascimento=data
+        self.nascimento=str(data)
         self.email=email
 
     def __str__(self):

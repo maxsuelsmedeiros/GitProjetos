@@ -28,7 +28,6 @@ def verificarParticipantes():
         data = jsonObj["nascimento"].split("-")
         nascimento = date(int(data[0]), int(data[1]), int(data[2]))
         novoParticipante = Participante(nome, email, nascimento)
-        print(novoParticipante)
         participantes.append(novoParticipante)
     for t in participantes:
         print(t)
@@ -38,17 +37,22 @@ def adicionarParticipantes():
     email=input("Por favor digite o email do novo participante!")
     nascimento=input("Por favor digite a data de nascimento do participante dividindo por '-'(hifen) !")
     data=nascimento.split("-")
+    print(data)
     data=date(int(data[2]), int(data[1]), int(data[0]))
+    print(data)
     participanteNovo=Participante(nome,data,email)
-    arq = open("participante.txt" , 'a+', encoding="utf8")
+    arq = open("participantes.txt" , 'r', encoding="utf8")
     jsonObjs = json.loads(arq.read())
+    arq.close()
+    arq1=open("participantes.txt" , 'w', encoding="utf8")
     novoParticipante ={}
     novoParticipante['nome']=participanteNovo.nome
     novoParticipante['nascimento']=participanteNovo.nascimento
     novoParticipante['email']=participanteNovo.email
+    #print(novoParticipante)
     jsonObjs.append(novoParticipante)
-    json.dump(jsonObjs,arq,ensure_ascii=False, indent=4)
-    arq.close()
+    json.dump(jsonObjs,arq1,ensure_ascii=False, indent=8)
+    arq1.close()
 
 
 
