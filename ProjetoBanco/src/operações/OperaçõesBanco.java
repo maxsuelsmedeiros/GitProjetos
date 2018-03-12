@@ -24,9 +24,10 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-public class OperaçõesBanco  {
-    private DataInputStream in;
-    private DataOutputStream out;
+public class OperaçõesBanco implements Runnable {
+    private ServerSocket sock;
+    private DataInputStream is;
+    private DataOutputStream os;
     private ArrayList<Cliente> listaCliente = new ArrayList<Cliente>();
     private ArrayList<Agencia> listaAgencias = new ArrayList<Agencia>();
     private ArrayList<ContaCorrente> listaCC = new ArrayList<ContaCorrente>();
@@ -38,6 +39,9 @@ public class OperaçõesBanco  {
     ou se deu erraddo dependendo do retorno
     */
 
+    public void setSock(ServerSocket sock) {
+        this.sock = sock;
+    }
 
     public ArrayList<Agencia> getListaAgencias() {
         return listaAgencias;
@@ -299,7 +303,8 @@ public class OperaçõesBanco  {
             System.out.println("Saldo insuficiente para transferencia!");
         }
     }
-
+    //A função de transferencia distribuida permite que cliente do banco atual tranfiram para outro banco
+    //é necessário alterar "na mão" o endereço IP
     public boolean transferenciaDistribuida(double valorTranferencia, String numContaServidor,String agenciaServidor ){
         InetAddress ia;
         int port = 5000;
@@ -347,6 +352,75 @@ public class OperaçõesBanco  {
         }
         return true;
     }
+    //A função de run vai executar a thread que irá sempre ficar ativa, aguardando conexões
+    public void run () {
 
+        try {
+            //o socketServer será o socket que vai ser responsável por aguardas as conexões
+            Socket sockServer = this.sock.accept();
+            System.out.println("Aguardando conexão!");
+            int contC = 0;
+            int contP = 0;
+            DataInputStream in = new DataInputStream(sockServer.getInputStream());
+            DataOutputStream out = new DataOutputStream(sockServer.getOutputStream());
+
+            //Essa primeira mensagem deve ser a agencia
+            String msg_agencia = in.readUTF();
+
+            for (Conta atual : listaCC) {
+                if (msg_agencia.equals(atual.getAgencia())) {
+                    contC = contC + 1;
+                }
+            }
+            for (Conta atual : listaCP) {
+                if (msg_agencia.equals(atual.getAgencia())) {
+                    contP = contP + 1;
+                }
+            }
+            if (contC == 1 || contP == 1) {
+                out.writeUTF("OK");
+            } else {
+                out.writeUTF("NEGADO");
+            }
+            //Essa segunda mensagem é o número da conta
+            String msg_conta = in.readUTF();
+
+            for (Conta atual : listaCC) {
+                if (msg_conta.equals(atual.getNúmeroConta())) {
+                    contC = contC + 1;
+                }
+            }
+            for (Conta atual : listaCP) {
+                if (msg_conta.equals(atual.getNúmeroConta())) {
+                    contP = contP + 1;
+                }
+            }
+            if (contC == 2 || contP == 2) {
+                out.writeUTF("OK");
+            } else {
+                out.writeUTF("NEGADO");
+            }
+            //Essa ultima mensagem verifica se o valor passo é positivo ou negativo
+            String msg_valor = in.readUTF();
+            double valor = Double.valueOf(msg_valor);
+            if (valor > 0) {
+                out.writeUTF("OK");
+            } else {
+                out.writeUTF("NEGADO");
+            }
+            if (contC == 2) {
+                this.despositoContaCorrente(msg_conta, valor, msg_agencia);
+            }
+            if (contP == 2) {
+                this.despositoContaPoupança(msg_conta, valor, msg_agencia);
+            }
+            System.out.println("Transferencia efetuada com sucesso");
+
+        } catch (IOException ex) {
+            System.out.println();
+        } catch (Exception ex){
+            System.out.println(ex.getMessage());
+        }
+    }
 
 }

@@ -13,8 +13,12 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.logging.Logger;
+
 import autenticarDados.Autenticar;
 import operações.OperaçõesBanco;
+
+import javax.swing.*;
 
 public class Teste {
 /*
@@ -120,6 +124,54 @@ public class Teste {
         ContaCorrente cC = cadastrarContaC(ag,cL);
         cL.setContaC(cC.getNúmeroConta());
         verificar(cL);
+        InetAddress ia;
+        int port = 5000;
+        try {
+            ia = InetAddress.getByName("localhost");
+            Socket sock = new Socket(ia,port);
+
+            System.out.println("Conetado ao servidor do outro banco");
+
+            DataInputStream in = new DataInputStream(sock.getInputStream());
+            DataOutputStream out = new DataOutputStream(sock.getOutputStream());
+
+            String agencia = "1111-1";
+
+            out.writeUTF(agencia);
+
+            String msg_in1 = in.readUTF();
+
+            if(msg_in1.equals("NEGADO")){
+                System.out.println("Deu problema");
+            }
+            String numero = "22222-22";
+            out.writeUTF(numero);
+
+            String msg_in2 = in.readUTF();
+            if(msg_in2.equals("NEGADO")){
+                System.out.println("Deu problema");
+            }
+
+            double valor = 50;
+            String valorVerificar = String.valueOf(valor);
+            out.writeUTF(valorVerificar);
+
+            String msg_in3 = in.readUTF();
+
+            if(msg_in3.equals("NEGADO")){
+                System.out.println("Deu problema");
+            }
+            System.out.println("foi sucesso");
+
+            sock.close();
+        } catch (UnknownHostException ex) {
+            System.out.println("Não foi possível resolver endereço");
+
+        } catch (IOException ex) {
+            System.out.println("Erro de rede");
+
+        }
+        /*
         try {
             InetAddress ia = InetAddress.getByName("192.168.25.218");
             int port = 5000;
@@ -179,6 +231,7 @@ public class Teste {
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
+        */
     }
 
     static Agencia cadastrarAgencia(){

@@ -4,12 +4,36 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import autenticarDados.Autenticar;
 import operações.OperaçõesBanco;
+//Classes de socket
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 public class APP  {
     static Scanner scan = new Scanner(System.in);
     static Autenticar aT = new Autenticar();
 
     public static void main(String args[]){
         OperaçõesBanco oP = new OperaçõesBanco();
+        try {
+            // Trecho de código disponibilizado pelo professor Ruan
+            InetAddress ia = InetAddress.getByName("localhost");
+            int port = 5000;
+            ServerSocket server = new ServerSocket(port, 10, ia);
+            //Nesse trecho os dados do servidor são passados por parametro pelo socketserver chamdo de server
+            oP.setSock(server);
+            //Depois inicia uma thread que vai ficar ativa, já que o main só é finalizado caso o usuário digite 0 e saia do main
+            Thread t1 = new Thread(oP);
+            t1.start();
+        } catch (UnknownHostException ex) {
+            System.out.println(ex.getMessage());
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
         System.out.println("Bem vindo, os opções são as seguintes:\n1-Cadastrar Agência\n2-Cadastrar Cliente");
         System.out.println("3-Cadastro de conta Corrente\n4-Cadastro de conta Poupança \n5-Deposito\n6-Saque\n7-Transferência para o mesmo banco\n8-Informações do cliente \n9-Saldo\n10-Transferencia para outro banco\n0- Para finalizar\n:");
         int opção = scan.nextInt();
