@@ -119,7 +119,11 @@ public class OperaçõesBanco implements Runnable {
         Cliente cl;
         for(Cliente atual:listaCliente){
             if(cpf.equals(atual.getCpf())){
+<<<<<<< HEAD
                 System.out.println("Esse cliente já esta cadastrado no no sistema, não é possível cadastrar outro cliente com o mesmo cpf");
+=======
+                System.out.println("Esse cliente já esta cadastrado no sistema, não é possível cadastrar outro cliente com o mesmo cpf");
+>>>>>>> 8e56fb18112c00a2f37c372b345dc04a0e1aef67
                 return false;
             }
         }
@@ -203,7 +207,11 @@ public class OperaçõesBanco implements Runnable {
                 String opção=scan.next();
                 opção=opção.toUpperCase();
                 if(opção.equals("SIM")){
+<<<<<<< HEAD
                     atual.setSaldo(atual.getSaldo()-valorSaque);
+=======
+                    atual.setSaldo(valorSaque-atual.getChequeEspecial());
+>>>>>>> 8e56fb18112c00a2f37c372b345dc04a0e1aef67
                 }else{
                     System.out.println("Volte sempre!");
                     return false;
@@ -305,11 +313,19 @@ public class OperaçõesBanco implements Runnable {
     }
     //A função de transferencia distribuida permite que cliente do banco atual tranfiram para outro banco
     //é necessário alterar "na mão" o endereço IP
+<<<<<<< HEAD
     public boolean transferenciaDistribuida(double valorTranferencia, String numContaServidor,String agenciaServidor,String endereçoServidor ){
         InetAddress ia;
         int port = 5000;
         try {
             ia = InetAddress.getByName(endereçoServidor);
+=======
+    public boolean transferenciaDistribuida(double valorTranferencia, String numContaServidor,String agenciaServidor ){
+        InetAddress ia;
+        int port = 5000;
+        try {
+            ia = InetAddress.getByName("localhost");
+>>>>>>> 8e56fb18112c00a2f37c372b345dc04a0e1aef67
             Socket sock = new Socket(ia,port);
 
             System.out.println("Conetado ao servidor do outro banco");
